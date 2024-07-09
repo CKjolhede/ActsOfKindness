@@ -2,9 +2,7 @@
 
 # Standard library imports
 from models import db, User, UserItem, Transaction, Item
-from flask_restful import Api, Resource
-from flask_migrate import Migrate
-from flask_cors import CORS
+from flask_restful import Resource
 from flask import Flask, make_response, jsonify, request, session, abort
 from config import app, db, api
 
@@ -17,7 +15,7 @@ class Users(Resource):
     def post(self):
         data = request.get_json()
         try:
-            user = User(
+            new_user = User(
                 email=data['email'],
                 first_name=data['first_name'],
                 last_name=data['last_name'],
@@ -30,11 +28,12 @@ class Users(Resource):
         except ValueError as e:
             abort(422, e.args[0])
             
-        db.session.add(user)
+        db.session.add(new_user)
         db.session.commit()
-        return make_response(user.to_dict(), 201)
+        session["user_id"] = new_user.id
+        return make_response(new_user.to_dict(), 201)
     
-api.add_resource(Users, '/users')
+api.add_resource(Users, '/users', "/signup")
 
 class UserByID(Resource):
     def get(self, id):
@@ -63,7 +62,7 @@ class UserByID(Resource):
         db.session.commit()
         return make_response('', 204)
     
-api.add_resource(UserByID, '/users/<int:id>')
+api.add_resource(UserByID, '/user/<int:id>')
 
 class Items(Resource):
     def get(self):
@@ -71,6 +70,15 @@ class Items(Resource):
         return make_response(items, 200)
     
 api.add_resource(Items, '/items')
+
+class ItemById(Resource):
+    def get(self, id):
+        item = Item.query.filter(Item.id == id).first()
+        return make_response(item.to_dict(), 200)
+    
+api.add_resource(ItemById, '/item/<int:id>')
+    
+    
 
 class UserItemsByID(Resource):
     def get(self, id):

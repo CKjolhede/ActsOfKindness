@@ -21,8 +21,7 @@ class User(db.Model, SerializerMixin):
     user_type = db.Column(db.Boolean)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-    useritems = db.relationship('UserItem', back_populates='user', cascade="delete, delete-orphan")
-    users = association_proxy('useritems', 'user')
+    #useritems = db.relationship('UserItem', back_populates='user', cascade="delete, delete-orphan")
     
     def __repr__(self):
         return f'<ID: {self.id} | Name {self.first_name} {self.last_name} | Email {self.email}>'
@@ -38,7 +37,7 @@ class UserItem(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
     
-    user = db.relationship('User', back_populates='useritems')
+    #user = db.relationship('User', back_populates='useritems')
     
     @validates('price')
     def validate_price(self, key, price):
@@ -67,6 +66,7 @@ class Item(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<ID: {self.id} | Product Name: {self.name} | Price {self.price}>'
     
+
     
 class Transaction(db.Model, SerializerMixin):
     __tablename__ = 'transactions'
