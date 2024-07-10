@@ -1,8 +1,8 @@
-"""init
+"""init v3
 
-Revision ID: 61d18acc92dc
+Revision ID: 4f4dff02956a
 Revises: 
-Create Date: 2024-07-09 07:21:23.305188
+Create Date: 2024-07-09 20:51:44.023231
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '61d18acc92dc'
+revision = '4f4dff02956a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,46 +21,43 @@ def upgrade():
     op.create_table('items',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=True),
+    sa.Column('category', sa.String(), nullable=True),
     sa.Column('price', sa.Float(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
+    sa.Column('_password_hash', sa.String(), nullable=True),
     sa.Column('first_name', sa.String(), nullable=False),
     sa.Column('last_name', sa.String(), nullable=False),
     sa.Column('phone', sa.String(), nullable=False),
+    sa.Column('street', sa.String(), nullable=False),
     sa.Column('city', sa.String(), nullable=False),
     sa.Column('state', sa.String(), nullable=False),
     sa.Column('zip_code', sa.String(), nullable=False),
     sa.Column('user_type', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
     op.create_table('useritems',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('item_id', sa.Integer(), nullable=True),
-    sa.Column('title', sa.String(), nullable=True),
-    sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('status', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('item_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['item_id'], ['items.id'], name=op.f('fk_useritems_item_id_items')),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_useritems_user_id_users')),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('transactions',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('useritem_id', sa.Integer(), nullable=True),
-    sa.Column('amount', sa.Float(), nullable=True),
-    sa.Column('giver_id', sa.Integer(), nullable=True),
-    sa.Column('receiver_id', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('comment', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['giver_id'], ['users.id'], name=op.f('fk_transactions_giver_id_users')),
-    sa.ForeignKeyConstraint(['receiver_id'], ['users.id'], name=op.f('fk_transactions_receiver_id_users')),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('useritem_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_transactions_user_id_users')),
     sa.ForeignKeyConstraint(['useritem_id'], ['useritems.id'], name=op.f('fk_transactions_useritem_id_useritems')),
     sa.PrimaryKeyConstraint('id')
     )
