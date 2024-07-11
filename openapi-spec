@@ -7050,7 +7050,7 @@ x-api-definition:
     development_team: Guest Experience Management
     enterprise_architect:
     - Maria.Brinas-Dobrowski
-    owner: Dakota.Reese.Brown
+    user: Dakota.Reese.Brown
     portfolio: Digital
   production_date: '2018-03-16'
   retirement_date: null
